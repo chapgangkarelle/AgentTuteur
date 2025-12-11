@@ -10,7 +10,6 @@ def show_header():
     link = st.text_input("Entrez votre lien")
     return level, link
 
-
 def show_discussion_history(history_placeholder):
     container = history_placeholder.container()
     with container:
@@ -18,7 +17,6 @@ def show_discussion_history(history_placeholder):
             if message["role"] != "system":
                 with st.chat_message(message["role"]):
                     st.write(message["content"])
-
 
 def show_explanations():
     level, arxiv_url = show_header()
@@ -35,7 +33,6 @@ def show_explanations():
             st.session_state.tutor_agent.ask_tutor(user_input)
             user_input = None
             show_discussion_history(history_placeholder)
-
 
 if __name__ == "__main__":
     show_explanations()

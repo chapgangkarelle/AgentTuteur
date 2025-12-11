@@ -5,13 +5,11 @@ from config import CONTEXT, PROMPT, LEVEL_CONFIG
 import requests
 import fitz
 
-
 class TutorAgent:
     def __init__(self):
         load_dotenv()
         self.groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         self.history = []
-
 
     def update_history(self, role, content):
         self.history.append(
@@ -20,7 +18,6 @@ class TutorAgent:
                 "content": content
             }
         )
-
 
     def build_context(self, level):
         level_info = (
@@ -31,7 +28,6 @@ class TutorAgent:
         context = CONTEXT.replace("{info_niveau}", level_info)
         
         self.update_history(role="system", content=context)
-
 
     @staticmethod
     def get_pdf_content(arxiv_url):
@@ -52,13 +48,9 @@ class TutorAgent:
         return "".join(pdf_content)
     
 
-
     def build_prompt(self, arxiv_url):
         prompt = PROMPT.replace("{article_content}", TutorAgent.get_pdf_content(arxiv_url))
         self.update_history(role="user", content=prompt)
-
-
-
 
     def explain(self, level, arxiv_url):
         self.build_context(level)
