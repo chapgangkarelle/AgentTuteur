@@ -4,6 +4,18 @@ from tutor_agent import TutorAgent
 if "tutor_agent" not in st.session_state :
 	st.session_state.tutor_agent = TutorAgent()
 
+
+if st.button("📄 Exporter le résumé en PDF"):
+    pdf_path = st.session_state.tutor_agent.export_last_summary_to_pdf()
+    if pdf_path:
+        with open(pdf_path, "rb") as f:
+            st.download_button(
+                label="Télécharger le PDF",
+                data=f,
+                file_name="resume_article.pdf",
+                mime="application/pdf"
+            )
+
 def show_header():
     st.title("Agent Tuteur")
     level = st.selectbox("Niveau d'explications", ["facile", "moyen", "avancé"])

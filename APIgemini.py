@@ -37,3 +37,5 @@ class Gemini():
 
       file_name='résumé.wav'
       self.wave_file(file_name, data)     
+
+

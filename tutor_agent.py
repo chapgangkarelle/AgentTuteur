@@ -4,6 +4,7 @@ import os
 from config import CONTEXT, PROMPT, LEVEL_CONFIG
 import requests
 import fitz
+from fpdf import FPDF
 
 class TutorAgent:
     def __init__(self):
@@ -18,6 +19,16 @@ class TutorAgent:
                 "content": content
             }
         )
+
+    def get_last_assistant_message(self):
+        """
+        Retourne le dernier message envoyé par l'assistant (souvent le résumé).
+        Retourne None s'il n'y en a pas.
+        """
+        for message in reversed(self.history):
+            if message["role"] == "assistant":
+                return message["content"]
+        return None
 
     def build_context(self, level):
         level_info = (
@@ -76,3 +87,29 @@ class TutorAgent:
         ).choices[0].message.content
 
         self.update_history(role="assistant", content=response)
+
+    def export_last_summary_to_pdf(self, filepath: str = "resume_article.pdf"):
+      """
+      Crée un PDF simple avec le dernier résumé.
+      Retourne le chemin du fichier.
+      """
+      summary = self.get_last_assistant_message()
+      if not summary:
+         return None
+
+      pdf = FPDF()
+      pdf.add_page()
+      pdf.set_auto_page_break(auto=True, margin=15)
+
+      # Titre
+      pdf.set_font("Arial", "B", 16)
+      pdf.multi_cell(0, 10, "Résumé de l'article arXiv")
+      pdf.ln(5)
+
+      # Corps
+      pdf.set_font("Arial", "", 12)
+      pdf.multi_cell(0, 7, summary)
+
+      pdf.output(filepath)
+
+      return filepath
